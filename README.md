@@ -1,17 +1,19 @@
 # protheus-docker
 
-Tutorial: https://www.youtube.com/watch?v=wcMU0pqfZWA
+Tutorial: https://www.linkedin.com/in/brunoabrigo/
 
-Arquivos necessarios: https://drive.google.com/drive/folders/1XzxgZrCf4l79nsoCWI-9ykMUS3T37FzM?usp=sharing
+Arquivos necessarios: https://drive.google.com/drive/folders/1--UkpndBS77dhmetj10zxqU_NC63NGWf?usp=share_link
 
 # Binarios
 
-Copie o arquivo o arquivo tar.gz do appserver para docker/totvs-appserver-docker e tar.gz do dbaccess para docker/totvs-dbaccess-docker.
+Copie os arquivos 
+ - tar.gz do appserver para docker/totvs-appserver-docker 
+ - tar.gz do dbaccess para docker/totvs-dbaccess-docker
 
 # Ambiente
-Crie uma copia do arquivo env-example com o nome .env
+Configure as variaveis de ambiente do arquivo .env
 
-Descompacte o arquivo "protheus12.zip" dentro do diretorio "docker" ou modifique as variaveis de ambiente no arquivo .env
+Descompacte o arquivo "totvs12.zip" dentro do diretorio "docker"
 
 # Execucao
 docker-compose up -d
