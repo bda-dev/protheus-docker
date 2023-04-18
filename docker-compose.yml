@@ -1,0 +1,64 @@
+version: '4.0'
+
+services:
+
+  database:
+    image: "mcr.microsoft.com/mssql/server:2019-CU5-ubuntu-18.04"
+    command: /bin/bash ./entrypoint.sh
+    container_name: protheus_mssql
+    user: root
+    environment:
+      SA_PASSWORD: ${DB_PASS}
+      ACCEPT_EULA: "Y"
+      MSSQL_DB: ${DB_NAME}
+    volumes:
+      - ./docker/mssql/entrypoint.sh:/entrypoint.sh
+      - ./docker/mssql/dbinit.sh:/dbinit.sh
+      - ./docker/mssql/dbinit.sql:/dbinit.sql
+    ports: 
+      - ${DB_PORT}:1433
+
+  license:
+    image: brunoabrigo/protheus_license:latest
+    container_name: protheus_license
+    ports:
+      - 5555:5555
+
+  dbaccess:
+    build: ./docker/totvs-dbaccess-docker
+    container_name: protheus_dbaccess
+    ports:
+      - 7890:7890
+    environment:
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+    depends_on: 
+      - database
+      - license
+
+  appserver:
+    build: ./docker/totvs-appserver-docker
+    container_name: protheus_appserver
+    ports:
+      - 9998:9998
+      - 8012:8012
+      - 13010:13010
+    user: root
+    environment:
+      - DBACCESS_SERVER=${DBACCESS_SERVER}
+      - DBACCESS_ALIAS=${DBACCESS_ALIAS}
+      - DBACCESS_PORT=${DBACCESS_PORT}
+    volumes:
+      - ${PROTHEUS_DATA_PATH}:/totvs12/protheus_data
+      - ${PROTHEUS_APO_PATH}:/totvs12/protheus/apo
+      - ${PROTHEUS_APO_PATH_API}:/totvs12/protheus/apo/api
+    depends_on: 
+      - dbaccess
+      - license
+
+volumes:
+  mssql_data: {}
